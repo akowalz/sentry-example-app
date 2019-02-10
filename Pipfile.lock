@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "f30186c768a6870b999e8457602aec5345413434787642e946c7591ae5dd3614"
+            "sha256": "e3b413308934eaa96243b50ce011df77b70ba476b82ce4b4bf7b2e0d03890e18"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -16,6 +16,19 @@
         ]
     },
     "default": {
+        "blinker": {
+            "hashes": [
+                "sha256:471aee25f3992bd325afa3772f1063dbdbbca947a041b8b89466dc00d606f8b6"
+            ],
+            "version": "==1.4"
+        },
+        "certifi": {
+            "hashes": [
+                "sha256:47f9c83ef4c0c621eaef743f133f09fa8a74a9b75f037e8624f83bd1b6626cb7",
+                "sha256:993f830721089fef441cdfeb4b2c8c9df86f0c63239f06bd025a76a7daddb033"
+            ],
+            "version": "==2018.11.29"
+        },
         "click": {
             "hashes": [
                 "sha256:2335065e6395b9e67ca716de5f7526736bfa6ceead690adf616d925bdc622b13",
@@ -86,11 +99,29 @@
             ],
             "version": "==1.1.0"
         },
+        "sentry-sdk": {
+            "extras": [
+                "flask"
+            ],
+            "hashes": [
+                "sha256:131e3b9ac11dffd86fe4f1f5d388d3dab372fc9e30d6611d1fc87096a1d67359",
+                "sha256:e925a2363178c211ad787f507cedda12ee5b0aadf5ac390950140393636a80bb"
+            ],
+            "index": "pypi",
+            "version": "==0.7.2"
+        },
         "sqlalchemy": {
             "hashes": [
                 "sha256:52a42dbf02d0562d6e90e7af59f177f1cc027e72833cc29c3a821eefa009c71d"
             ],
             "version": "==1.2.17"
+        },
+        "urllib3": {
+            "hashes": [
+                "sha256:61bf29cada3fc2fbefad4fdf059ea4bd1b4a86d2b6d15e1c7c0b582b9752fe39",
+                "sha256:de9529817c93f27c8ccbfead6985011db27bd0ddfcdb2d86f3f663385c6a9c22"
+            ],
+            "version": "==1.24.1"
         },
         "werkzeug": {
             "hashes": [
