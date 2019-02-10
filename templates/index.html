@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Todo!</title>
+    <link rel="stylesheet" type="text/css" href='{{ url_for("static", filename="app.css") }}'>
+  </head>
+
+  <body>
+    <div id="container">
+      <div id="header">
+        <div>
+          {% if 'user' in session %}
+          Logged in as <strong>{{ session['user'] }}</strong>
+          {% endif %}
+        </div>
+
+        <form action="/login" method="POST">
+          <input type="text" name="user" placeholder="Email or username">
+          <button type='submit' class="shadow">Login</button>
+        </form>
+      </div>
+
+      <h1>
+        Todo!
+      </h1>
+
+      <div id="form-container">
+        <form action="/todos" method="POST">
+          <input
+            id="todo-text-entry"
+            class="shadow"
+            type="text"
+            name="todo-text"
+            placeholder="What needs to be done? (don't forget the time!)"
+          >
+
+          <button id="add-button" class="shadow" type='submit'>Add</button>
+        </form>
+      </div>
+
+      <div id="todos">
+        <ul>
+          {% for todo in todos %}
+          <li class="todo shadow {{ 'complete' if todo.complete }}">
+            {{ todo.text }} <span class="due">| {{ todo.due }}</span>
+
+              {% if not todo.complete %}
+              <form action='{{ url_for("complete_todo", id=todo.id) }}' method="POST">
+                <input type="submit" value="Mark as Complete">
+              </form>
+              {% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </body>
+
+</html>

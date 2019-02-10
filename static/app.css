@@ -1,0 +1,113 @@
+html {
+  font-family: Verdana;
+  color: #525252;
+  background-color: #ededed;
+}
+
+#header ul {
+  list-style: none;
+  padding: 0;
+}
+
+form {
+  margin: 8px 0 8px 0;
+}
+
+h1 {
+  font-size: 3.0em;
+  margin-top: 50px;
+  color: #f4645f;
+  text-transform: uppercase;
+  font-style: italic;
+}
+
+#container {
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  max-width: 720px;
+}
+
+#form-container form {
+  height: 3em;
+  display: flex;
+}
+
+#todo-text-entry {
+  flex-grow: 5;
+  color: #555;
+  padding-left: 10px;
+  font-style: italic;
+}
+
+::placeholder {
+  color: #bbb;
+  font-style: italic;
+}
+
+#add-button {
+  flex-grow: 1;
+  margin-left: 5px;
+}
+
+button {
+  background-color: #0E79DE;
+  color: #fff;
+}
+
+input, button {
+  font-size: 1.2em;
+  border: none;
+  padding: 8px;
+}
+
+input:focus, button:focus { 
+  outline: none; 
+}
+
+#todos ul {
+  margin-top: 50px;
+  padding-left: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.todo {
+  border-radius: 10px;
+  border-left-color: #f4645f;
+  border-left-style: solid;
+  border-left-width: 10px;
+  display: flex;
+  height: 60px;
+  list-style: none;
+  padding: 0 0 0 20px;
+  margin: 0 0 20px 0;
+  background-color: #fff;
+  align-items: center;
+}
+
+.todo form {
+  margin-left: auto;
+  padding-right: 10px;
+}
+
+.todo input {
+  background-color: #f4645f;
+  color: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.todo span.due {
+  padding-left: 5px;
+  color: #bbb;
+}
+
+li.todo.complete {
+  text-decoration: line-through;
+  border-left-color: green;
+}
+
+.shadow {
+  box-shadow: -2px 2px 8px rgba(0, 0, 0, 0.2);
+}
