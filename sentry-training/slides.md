@@ -38,7 +38,7 @@ build-lists: true
 - User reports bug _(e.g.: "the page isn't loading")_
 - Devs check the logs
 - Discover an exception thrown on page load for 50% of users
-- Frantically release hotfix
+- Scramble to release fix
 - _repeat_
 
 ---
@@ -46,8 +46,9 @@ build-lists: true
 # How we deal with exceptions with an Exception Tracker
 
 - Deploy some code
-- Get notified of new exception
-- Fix it before users even need to report it
+- A user sees an exception
+- Sentry notifies us of the exception
+- Immediately rollback, or release a fix
 
 ---
 
@@ -64,8 +65,12 @@ build-lists: true
 ---
 
 > Sentry works with your application logging infrastructure, often integrating directly. It does not replace the need for those logs, and it's also not a destination for things that aren't actionable errors or crashes.
---- 
+
+---
+
 # Logs inform us about _expected_ events
+
+---
 
 ## Sentry informs us about _unexpected_ events
 
@@ -124,10 +129,41 @@ Unless you know what kind of exception you are expecting, logging it and moving 
 
 ---
 
+# Main Concepts
+
+---
+
+# Issues
+
+*Issue*: A _class_ of exceptions, specific to a single location in the code.
+
+---
+
+
+# Events
+
+*Event*: A single _instance_ of an issue.  E.g. a user seeing that 500 page. Sentry will intelligently group events into issue types.
+
+---
+
+# Context
+
+*Context*: Extra data associated with an event, like the user or informatio about what was happening.
+
+---
+
+# Projects
+
+An application in Sentry's world, identified by an ID.
+
+You can have different Sentry Projects for your front and back-end, or for your cron and webservers.
+
+
+---
+
 # Integrating Sentry into an application
 
 _demo_
-
 
 ---
 
