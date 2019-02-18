@@ -7,7 +7,6 @@ build-lists: true
 
 # Sentry is an _exception tracker_
 
-
 ---
 
 ![Fit](shit_broken.png)
@@ -18,13 +17,11 @@ build-lists: true
 
 ---
 
-# you know, these...
-
----
-
 ![fit](500_airbnb.png)
 
 ---
+
+# Can answer important questions about exceptions
 
 - How many times has an exception occurred?
 - How many users have experienced it?
@@ -48,7 +45,7 @@ build-lists: true
 - Deploy some code
 - A user sees an exception
 - Sentry notifies us of the exception
-- Immediately rollback, or release a fix
+- Immediately rollback, or release a fix before any significant impact
 
 ---
 
@@ -57,14 +54,6 @@ build-lists: true
 ---
 
 ![fit](sentry_vs_logging.png)
-
----
-
-> Logging provides you with a trail of events. Often those events are errors, but many times they're simply informational. Sentry is fundamentally different because we focus on exceptions, or in other words, we capture application crashes.
-
----
-
-> Sentry works with your application logging infrastructure, often integrating directly. It does not replace the need for those logs, and it's also not a destination for things that aren't actionable errors or crashes.
 
 ---
 
@@ -82,7 +71,7 @@ build-lists: true
 ```php
 $user = User::findBy($id);
 if ($user == null) {
-	Logger::error("User not found!");
+  Logger::error("User not found!");
 }
 ```
 
@@ -92,9 +81,9 @@ if ($user == null) {
 
 ```php
 try {
-	$user = User::findBy($id);
+  $user = User::findBy($id);
 } catch (NotFoundException $e) {
-	Logger::error("User not found!", ["exception" => $e]);
+  Logger::error("User not found!", ["exception" => $e]);
 }
 ```
 
@@ -104,32 +93,31 @@ try {
 
 ```php
 try {
-	$user = User::findBy($id);
+  $user = User::findBy($id);
+  // throws ArgumentException: 
+  // expected $id to be of type integer, got string
 } catch (NotFoundException $e) {
-	Logger::error("User not found!", ["exception" => $e]);
+  Logger::error("User not found!", ["exception" => $e]);
 }
-// throws ArgumentException: 
-// expected $id to be of type integer, got string
 ```
+
+Where are our logs now??
 
 ---
 
 # Uncaught exceptions are _really, really bad_.
 
 - Users seeing 500 pages
-- Cron jobs dying
-- Background processes aborting early
 - Data not loading
+- Background processes aborting before finishing
 
 ---
 
-# Exceptions can always happen, and you need a way to deal with them
-
-Unless you know what kind of exception you are expecting, logging it and moving on isn't enough.
+# Logging it and moving on is rarely enough
 
 ---
 
-# Main Concepts
+# Sentry Main Concepts
 
 ---
 
@@ -148,15 +136,13 @@ Unless you know what kind of exception you are expecting, logging it and moving 
 
 # Context
 
-*Context*: Extra data associated with an event, like the user or informatio about what was happening.
+*Context*: Extra data associated with an event.
 
 ---
 
 # Projects
 
-An application in Sentry's world, identified by an ID.
-
-You can have different Sentry Projects for your front and back-end, or for your cron and webservers.
+*Project*: Sentry's knowledge of an application.  Hosted vs DeepData, Mobile Apps, etc.
 
 
 ---
@@ -408,6 +394,26 @@ A "resolved" exception is one that you never expect to see again
 # Regressions
 
 - Regression checking allows you to check if your work actually did anything
+
+---
+
+# Sentry best practices
+
+- Add it to your application
+- Make sure it's running in all the relevant places (web requests, background jobs)
+- Disable it in development, ensure it's working in prod
+- Filter out PII
+- Ignore unactionable exceptions
+- Add user context, at least the Hosted account name!
+- Add any additional context, (jobs, etc)
+- Set up notification rules
+  - new errors
+  - N errors in timefrom
+  - N users in timeframe
+- Monitor it!
+  - Get new exceptions sent to Slack, chat about!
+  - Have exceptions sent to pager duty
+  - Make Sentry part of being the interruptible developer
 
 ---
 
