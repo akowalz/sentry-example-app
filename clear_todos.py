@@ -1,4 +1,4 @@
-from app import Todo, db
+from app import Todo, db, sentry_sdk
 
 def clear_todos():
     todos = Todo.query.filter(Todo.complete == True)
@@ -14,6 +14,15 @@ def clear_todos():
             print("Deleted todo")
 
         except Exception as e:
-            print("Encountered exception!")
+            with sentry_sdk.configure_scope() as scope:
+                scope.set_tag("cron-job", "clear_todos")
+                scope.set_extra("todo", todo)
 
+            print("Encountered exception!")
+            sentry_sdk.capture_exception(e)
+
+
+
+print("Clearing todos")
 clear_todos()
+print("Done")
