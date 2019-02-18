@@ -419,6 +419,14 @@ Make monitoring for new exceptions part of being the interruptible developer
 
 # There's a lot more to learn!
 
+- Breadcrumbs
+- GitHub integration
+- Client-side integrations! (team mobile, where you at)
+
+---
+
+# There's a lot more to learn!
+
 Sentry best practices on Confluence:
   - 
 Download these slides:

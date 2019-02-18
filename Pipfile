@@ -17,3 +17,4 @@ python_version = "3.7"
 [scripts]
 server = "flask run"
 dbdo = "python dbdo.py"
+clear_todos = "python clear_todos.py"
