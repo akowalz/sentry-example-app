@@ -5,6 +5,7 @@ import werkzeug.exceptions
 # App setup
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = 'false'
 app.secret_key = 'secret'
 db = SQLAlchemy(app)
 
