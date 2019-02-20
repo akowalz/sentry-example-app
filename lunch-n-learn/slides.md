@@ -11,7 +11,9 @@ build-lists: true
 
 ---
 
-# The pitch: _Sentry allows us to learn about bugs before our users report them._
+# The pitch: _Sentry allows find and fix bugs in production before our users report them._
+
+### or as Sentry helpfully puts it...
 
 ---
 
@@ -155,6 +157,8 @@ https://4720d02296f74f2492978ba6bdd09929@sentry.io/133474
 # Issues
 
 *Issue*: A class of exceptions within a _project_, specific to a single location in the code.
+
+Can be in one of four states: `Unresolved`, `Resolved`, `Ignored`.
 
 ---
 
@@ -362,39 +366,47 @@ with sentry_sdk.configure_scope() as scope:
 
 ---
 
-# Step 1: Create a project for your team's applications/services
+# Exception tracking should be set up for every new app _before it's first production deploy._
 
-### maybe ask an admin for help.
+---
+
+# Step 1: Create a project for your team's applications
+
+### Maybe ask an admin for help.
 
 ---
 
 # Step 2: Integrate the SDK, make sure it's capturing everywhere
 
-### test it in prod and staging, disable it in development.
+### Test it in prod and staging, disable it in development.
 
 ---
 
 # Step 3: Ignore Unactionable Exceptions
 
-### otherwise they'll eat into our rate limits.
+### Otherwise they'll eat into our rate limits.
 
 ---
 
-# Step 4: Add user and extra context
+# Step 4: Audit your code for use exception catchalls
 
-### at minimum, set `user.id` to the Hosted account.
+### These (likely important) exceptions are not making it to Sentry!
 
 ---
 
-# Step 5: Audit your code for use of `catch Exception`
+# Step 5: Add user and extra context
 
-### these (likely important!) exceptions are not making it to Sentry!
+### At minimum, set `user.id` to the Hosted account.
 
 ---
 
 # Step 6: Set up notification rules
 
-_example ruleset:_
+### They're super customizable.
+
+---
+
+# Example Notification Rulset
 
 - New issues go to Slack.
 - Emails for regressions.
@@ -403,21 +415,30 @@ _example ruleset:_
 
 ---
 
-# Step 7: Monitor it!
+# Step 7: Utilize Sentry's workflow
 
-### monitoring Sentry for new exceptions should be part being on bug duty.
-
----
-
-# The Sentry SDK must be installed in your app _before its first production deploy_
+### New issues should be looked at immediately.
 
 ---
 
-# Dealing with a backlog
+# Workflow for new issues:
 
-- Prioritize by impact to users
-- Filter out what's not actionable
-- Address new items immediately
+_always do one of the following:_
+
+1. Release a fix, move to _Resolved_.
+2. Move to _Ignored_ - circle back when impact is more clear.
+3. Create a backlog item, leave a comment in Sentry. Move to _Resolved_ when you're done.
+4. Just don't do nothing.
+
+---
+
+# Workflow for an issue backlog:
+
+- Prioritize by impact to users.
+- Fix issues as they come up in client bugs (utilize search).
+- Filter out what's not actionable.
+- Utilize auto-resolve.
+- Follow the same workflow for new issues!
 
 ---
 
