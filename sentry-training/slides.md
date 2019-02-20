@@ -7,57 +7,52 @@ build-lists: true
 
 # Sentry is an _exception tracker_
 
----
-
-![Fit](shit_broken.png)
+### whats that?
 
 ---
 
-# Sentry helps us monitor _uncaught_ exceptions 
+# The pitch: _Sentry allows us to learn about bugs before our users report them._
 
 ---
 
-![fit](500_airbnb.png)
+![Fit](images/shit_broken.png)
 
 ---
 
-# Sentry helps us answer important questions about Exceptions:
+# Sentry gives us tools for tracking and resolving _uncaught exceptions_
 
-- How many times has an exception occurred?
-- How many users have experienced it?
-- What was the user doing when they experienced it?
+### you know, these:
 
 ---
 
-# How we deal with exceptions without an Exception Tracker
-
-- Deploy some code
-- User reports bug _(e.g.: "the page isn't loading")_
-- Devs check the logs
-- Discover a bug in the release is causing that page to crash
-- Scramble to release fix
-- _repeat_
+![fit](images/500_airbnb.png)
 
 ---
 
-# How we deal with exceptions with an Exception Tracker
-
-- Deploy some code
-- A user sees an exception
-- Sentry notifies us of the exception
-- Immediately rollback, or release a fix before any significant impact
+![fit](images/500_2.png)
 
 ---
 
-# Isn't Sentry just more logs?
+
+![fit](images/500_3.png)
 
 ---
 
-![fit](sentry_vs_logging.png)
+![fit](images/500_4.png)
 
 ---
 
-![fit](sentry_vs_logging_quote.png)
+# Isn't that what our logs are for?
+
+---
+
+![fit](images/sentry_vs_logging.png)
+
+---
+
+>  Logging provides you with a trail of events. Often those events are errors, but many times they're simply informational. Sentry is fundamentally different because we focus on exceptions and application crashes. Sentry does not replace the need for those logs, and _it's also not a destination for things that aren't actionable errors or crashes_.
+
+-Sentry docs
 
 ---
 
@@ -69,14 +64,15 @@ build-lists: true
 
 ---
 
-
 # Logs inform us about _expected_ events
 
 ```php
+Logger::debug("Searching for user")
+
 $user = User::findBy($id);
 
 if ($user == null) {
-  Logger::error("User not found!");
+  Logger::warning("User not found!");
 }
 ```
 
@@ -94,7 +90,7 @@ try {
 
 ---
 
-# Sentry informs us about **unexpected** events
+# Sentry informs us about _unexpected_ events
 
 ```php
 try {
@@ -107,7 +103,11 @@ try {
 }
 ```
 
-Where are our logs now??
+_Where are your logs now?_
+
+---
+
+# Not all bugs are exceptions, but most uncaught exceptions are bugs
 
 ---
 
@@ -115,11 +115,24 @@ Where are our logs now??
 
 - Users seeing 500 pages
 - Data not loading
-- Background processes aborting before finishing
+- Background processes failing to do their work
+- It's basically your program giving up :(
 
 ---
 
-# Logging it and moving on is rarely enough
+# Sentry helps us answer important questions about bugs caused by exceptions:
+
+- When was it introduced?
+- How many users have experienced it?
+- What was the user doing when they experienced it?
+
+---
+
+# Sentry notifies us about exceptions, and creates a workflow for resolving them:
+
+- Actively notify after certain number of occurences/number of users are affected.
+- Ignore potentially unactionable exceptions until they become larger issues.
+- Resolve exceptions, track regressions, and view new issues in a release.
 
 ---
 
@@ -127,29 +140,34 @@ Where are our logs now??
 
 ---
 
+# Projects
+
+*Project*: Sentry's idea of an application.  Hosted, DeepData, iOS CRM, ember-app.
+
+Each _project_ has a unique sentry DSN (data source key), e.g.:
+
+```
+https://4720d02296f74f2492978ba6bdd09929@sentry.io/133474
+```
+
+---
+
 # Issues
 
-*Issue*: A _class_ of exceptions, specific to a single location in the code.
+*Issue*: A class of exceptions within a _project_, specific to a single location in the code.
 
 ---
 
 
 # Events
 
-*Event*: A single instance of an issue. Sentry will intelligently group events into issues.
+*Event*: A single instance of an _issue_. Sentry will intelligently group _events_ into _issues_.
 
 ---
 
 # Context
 
-*Context*: Extra data associated with an event (request parameters, browser, logged in user).
-
----
-
-# Projects
-
-*Project*: Sentry's idea of an application.  Hosted vs DeepData, Mobile Apps, etc.
-
+*Context*: Extra data associated with an _event_ (request parameters, browser, logged in user).
 
 ---
 
@@ -283,7 +301,7 @@ sentry_sdk.init(
 for todo in todos:
     try:
       if todo.text == "Can't delete me!":
-          raise Exception("Couldn't delete todo!")
+          raise PermissionError("Couldn't delete todo!")
 
       todo.delete()
     except Exception as e:
@@ -316,7 +334,7 @@ for todo in todos:
 # clear_todos.py
 
 with sentry_sdk.configure_scope() as scope:
-    scope.set_tag("cron-job-name", "clear_todos")
+    scope.set_tag("cron-job", "clear_todos")
 
 for todo in todos:
   ...
@@ -344,68 +362,54 @@ with sentry_sdk.configure_scope() as scope:
 
 ---
 
-# Step 1: Create a project for you application
+# Step 1: Create a project for your team's applications/services
 
-### maybe ask an admin for help
+### maybe ask an admin for help.
 
 ---
 
-# Step 2: Add the SDK to your application
+# Step 2: Integrate the SDK, make sure it's capturing everywhere
 
-- Make sure it's capturing exceptions _everywhere_, not just in web requests.
-- Disable it in development.
-- Test it staging and production.
+### test it in prod and staging, disable it in development.
 
 ---
 
 # Step 3: Ignore Unactionable Exceptions
 
-- Otherwise they'll eat into our rate limit
-- Use a before\_send hook or `ignored_exceptions` configuration option
+### otherwise they'll eat into our rate limits.
 
 ---
 
-# Step 4: Add user context
+# Step 4: Add user and extra context
 
-- Make `user.id` the Hosted account, if it's available
-- Then add whatever else you want!
-
----
-
-# Step 5: Add more context!
-
-- Tags for cron jobs
-- Arguments for background jobs
+### at minimum, set `user.id` to the Hosted account.
 
 ---
 
-# Audit your app for `catch Exception` statements
+# Step 5: Audit your code for use of `catch Exception`
 
-These (likely important!) exceptions are not making it to Sentry!
-
-- Manually send to Sentry after the catch
-- Or make the catch more specific.
+### these (likely important!) exceptions are not making it to Sentry!
 
 ---
 
-# Set up notification rules
+# Step 6: Set up notification rules
 
 _example ruleset:_
 
 - New issues go to Slack.
-- 100 events for an issue in a day sends an email
+- Emails for regressions.
+- 100 events for an issue in a day sends an email.
 - 1000 events/100 users in an hour Pages someone.
-- Regression notifications.
 
 ---
 
-# Monitor it!
+# Step 7: Monitor it!
 
-Make monitoring for new exceptions part of being the interruptible developer
+### monitoring Sentry for new exceptions should be part being on bug duty.
 
 ---
 
-# The Sentry SDK should be installed in your app _before its first production deploy_
+# The Sentry SDK must be installed in your app _before its first production deploy_
 
 ---
 
@@ -419,17 +423,21 @@ Make monitoring for new exceptions part of being the interruptible developer
 
 # There's a lot more to learn!
 
+- Releases and Github integration
 - Breadcrumbs
-- GitHub integration
 - Client-side integrations! (team mobile, where you at)
 
 ---
 
-# There's a lot more to learn!
+# Resources
 
 Sentry best practices on Confluence:
-  - 
-Download these slides:
-  - 
+  - _write me_
+Clone the sample application (slides are also here).
+  - _make me public_
 Sentry Documentation:
   - https://docs.sentry.io/
+
+---
+
+# [fit] Thank you! Questions?
