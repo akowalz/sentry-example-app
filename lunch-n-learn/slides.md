@@ -31,10 +31,6 @@ build-lists: true
 
 ---
 
-![fit](images/500_2.png)
-
----
-
 
 ![fit](images/500_3.png)
 
@@ -44,7 +40,7 @@ build-lists: true
 
 ---
 
-# Isn't that what our logs are for?
+# Isn't that what the logs are for?
 
 ---
 
@@ -83,6 +79,8 @@ if ($user == null) {
 # Logs inform us about _expected_ events
 
 ```php
+Logger::info("Searching for user");
+
 try {
   $user = User::findBy($id);
 } catch (NotFoundException $e) {
@@ -92,7 +90,7 @@ try {
 
 ---
 
-# Sentry informs us about _unexpected_ events
+# But what about _unexpected_ events?
 
 ```php
 try {
@@ -109,7 +107,26 @@ _Where are your logs now?_
 
 ---
 
-# Not all bugs are exceptions, but most uncaught exceptions are bugs
+# Easy peasy!
+
+```php
+try {
+
+  try {
+    $user = User::findBy($id);
+  } catch (NotFoundException $e) {
+    Logger::error("User not found!", ["exception" => $e]);
+  }
+
+} catch (Exception $e) {
+  Logger::error("Unexpected error!!", ["exception" => $e]);
+}
+```
+_How long will it be until you know about the error?_
+
+---
+
+# Not all bugs are exceptions, _but most uncaught exceptions are bugs_
 
 ---
 
@@ -146,7 +163,7 @@ _Where are your logs now?_
 
 *Project*: Sentry's idea of an application.  Hosted, DeepData, iOS CRM, ember-app.
 
-Each _project_ has a unique sentry DSN (data source key), e.g.:
+_Projects_ are identifered by a DSN:
 
 ```
 https://4720d02296f74f2492978ba6bdd09929@sentry.io/133474
@@ -157,8 +174,6 @@ https://4720d02296f74f2492978ba6bdd09929@sentry.io/133474
 # Issues
 
 *Issue*: A class of exceptions within a _project_, specific to a single location in the code.
-
-Can be in one of four states: `Unresolved`, `Resolved`, `Ignored`.
 
 ---
 
@@ -388,19 +403,13 @@ with sentry_sdk.configure_scope() as scope:
 
 ---
 
-# Step 4: Audit your code for use exception catchalls
-
-### These (likely important) exceptions are not making it to Sentry!
-
----
-
-# Step 5: Add user and extra context
+# Step 4: Add user and extra context
 
 ### At minimum, set `user.id` to the Hosted account.
 
 ---
 
-# Step 6: Set up notification rules
+# Step 5: Set up notification rules
 
 ### They're super customizable.
 
@@ -409,7 +418,6 @@ with sentry_sdk.configure_scope() as scope:
 # Example Notification Rulset
 
 - New issues go to Slack.
-- Emails for regressions.
 - 100 events for an issue in a day sends an email.
 - 1000 events/100 users in an hour Pages someone.
 
@@ -417,18 +425,18 @@ with sentry_sdk.configure_scope() as scope:
 
 # Step 7: Utilize Sentry's workflow
 
-### New issues should be looked at immediately.
+### Interruptible dev should look at new issues immediately.
 
 ---
 
 # Workflow for new issues:
 
-_always do one of the following:_
+_after triaging the issue, do one of the following_
 
-1. Release a fix, move to _Resolved_.
+1. Immediately release a fix, move to _Resolved_.
 2. Move to _Ignored_ - circle back when impact is more clear.
-3. Create a backlog item, leave a comment in Sentry. Move to _Resolved_ when you're done.
-4. Just don't do nothing.
+3. Create a backlog item, leave a comment in Sentry.
+4. Don't do nothing.
 
 ---
 
@@ -453,9 +461,9 @@ _always do one of the following:_
 # Resources
 
 Sentry best practices on Confluence:
-  - _write me_
+  - https://activecampaign.atlassian.net/wiki/spaces/DEV/pages/444498665/Sentry+for+Developers+-+Overview+and+Best+Practices
 Clone the sample application (slides are also here).
-  - _make me public_
+  - https://github.com/akowalz/sentry-example-app/
 Sentry Documentation:
   - https://docs.sentry.io/
 
